@@ -1,4 +1,4 @@
-package org.bargains.offers;
+package org.bargains;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

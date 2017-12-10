@@ -1,25 +1,23 @@
 package org.bargains.offers;
 
+import org.javamoney.moneta.Money;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpMethod.*;
-import static org.springframework.http.MediaType.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -34,10 +32,25 @@ public class OffersControllerIntegrationTest {
 
 	@Test
 	public void offerCreation_whenValidOffer_returns201AndCreatesOffer() throws Exception {
-		Offer expectedOffer = Offer.builder().build();
+		Offer expectedOffer = Offer.builder()
+				.title("offer")
+				.description("A life-changing opportunity relevant in our consumerist world")
+				.price(Money.of(29.95, "EUR"))
+				.offerStarts(LocalDateTime.of(2017, Month.NOVEMBER,1,10,10,12))
+				.offerEnds(LocalDateTime.of(2018, Month.NOVEMBER,1,10,10,12))
+				.build();
 		mvc.perform(request(POST, "/offers")
 				.contentType(APPLICATION_JSON)
-				.content("{}"))
+				.content("{" +
+						"  \"title\": \"offer\"," +
+						"  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
+						"  \"price\": {" +
+						"    \"amount\": 29.95," +
+						"    \"currency\": \"EUR\"" +
+						"  }," +
+						"  \"offerStarts\": \"2017-11-01T10:10:12\"," +
+						"  \"offerEnds\": \"2018-11-01T10:10:12\"" +
+						"}"))
 
 				.andExpect(status().isCreated());
 
