@@ -25,10 +25,11 @@ repositories {
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.hateoas:spring-hateoas'
+    compile 'org.springframework.boot:spring-boot-starter-validation'
     compile 'org.zalando:jackson-datatype-money:1.0.0'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
+    compile 'com.google.guava:guava:23.5-jre'
     compile 'org.javamoney:moneta:1.1'
     compile 'org.projectlombok:lombok:1.16.18'
 

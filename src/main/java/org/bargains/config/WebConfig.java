@@ -12,4 +12,5 @@ public class WebConfig {
     public Module moneyModule() {
         return new MoneyModule();
     }
+
 }

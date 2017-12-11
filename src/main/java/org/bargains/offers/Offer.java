@@ -2,9 +2,11 @@ package org.bargains.offers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.javamoney.moneta.Money;
 import org.springframework.hateoas.Identifiable;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Data
@@ -14,11 +16,15 @@ public class Offer implements Identifiable<String> {
     @JsonIgnore
     private String id;
 
+    @NotEmpty
     private String description;
 
+    @NotNull
     private Money price;
 
+    @NotNull
     private Instant offerStarts;
+    @NotNull
     private Instant offerEnds;
 
     @JsonIgnore
