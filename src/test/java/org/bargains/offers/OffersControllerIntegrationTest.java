@@ -15,17 +15,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.UnsupportedEncodingException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -46,6 +48,41 @@ public class OffersControllerIntegrationTest {
     public void validOfferCreationReturnsValidOfferWithId() {
         when(offersService.create(eq(EXPECTED_VALID_OFFER)))
                 .thenReturn(EXPECTED_VALID_OFFER_WITH_ID);
+    }
+
+    @Test
+    public void offers_whenExistingOffers_returnsOffers() throws Exception {
+        when(offersService.findAll())
+                .thenReturn(Arrays.asList(EXPECTED_VALID_OFFER_WITH_ID));
+
+        mvc.perform(request(GET, "/offers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description", is("A life-changing opportunity relevant in our consumerist world")))
+                .andExpect(jsonPath("$[0].offerStarts", is("2017-11-01T10:10:12Z")))
+                .andExpect(jsonPath("$[0].offerEnds", is("2018-11-01T10:10:12Z")))
+                .andExpect(jsonPath("$[0].price.amount", is(29.95)))
+                .andExpect(jsonPath("$[0].price.currency", is("EUR")))
+        ;
+    }
+
+    @Test
+    public void offers_whenExistingOffers_returnsLinksDependingOnExpirationStatus() throws Exception {
+        when(offersService.findAll())
+                .thenReturn(Arrays.asList(
+                        ACTIVE_OFFER,
+                        EXPIRED_OFFER,
+                        CANCELLED_OFFER
+                ));
+
+        mvc.perform(request(GET, "/offers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].links[?(@.rel=='cancel')]", hasSize(1)))
+                .andExpect(jsonPath("$[1].links[?(@.rel=='cancel')]", hasSize(0)))
+                .andExpect(jsonPath("$[2].links[?(@.rel=='cancel')]", hasSize(0)))
+                .andExpect(jsonPath("$[0].links[?(@.rel=='redeem')]", hasSize(1)))
+                .andExpect(jsonPath("$[1].links[?(@.rel=='redeem')]", hasSize(0)))
+                .andExpect(jsonPath("$[2].links[?(@.rel=='redeem')]", hasSize(0)))
+        ;
     }
 
     @Test
@@ -129,5 +166,30 @@ public class OffersControllerIntegrationTest {
             .price(Money.of(29.95, "EUR"))
             .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
             .offerEnds(LocalDateTime.of(2018, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .build();
+
+    private static final Offer ACTIVE_OFFER = Offer.builder()
+            .id("a-very-unique-id")
+            .description("A life-changing opportunity relevant in our consumerist world")
+            .price(Money.of(29.95, "EUR"))
+            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .offerEnds(Instant.MAX)
+            .build();
+
+    private static final Offer CANCELLED_OFFER = Offer.builder()
+            .id("a-very-unique-id")
+            .description("A life-changing opportunity relevant in our consumerist world")
+            .price(Money.of(29.95, "EUR"))
+            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .offerEnds(Instant.MAX)
+            .cancelled(true)
+            .build();
+
+    private static final Offer EXPIRED_OFFER = Offer.builder()
+            .id("a-very-unique-id")
+            .description("A life-changing opportunity relevant in our consumerist world")
+            .price(Money.of(29.95, "EUR"))
+            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .offerEnds(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
             .build();
 }

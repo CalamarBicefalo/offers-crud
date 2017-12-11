@@ -35,3 +35,16 @@ re-enabled as there is no specific
 requirement for that. We could implement
 state nicely exposing the appropriate
 hypermedia links
+
+- In order to demonstrate when an offer
+is active or not, a redeem / cancel links
+will be included in the payload.
+The intent is to use the 3rd level of the
+Richardson Maturity model, and manage state
+in the backend to then expose it via links.
+Instead of exposing flags / enums and 
+managing state in the client.
+
+- The redeem endpoint is not implemented
+and it'll return 404. It was not required
+and was added as a link for demonstration purposes.
