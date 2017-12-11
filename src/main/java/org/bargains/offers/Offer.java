@@ -15,7 +15,6 @@ class Offer implements Identifiable<String> {
     @JsonIgnore
     private String id;
 
-    private String title;
     private String description;
 
     private Money price;

@@ -18,7 +18,6 @@ public class InMemoryOffersServiceTest {
     @Test
     public void create_persistsOffer() {
         Offer offer = Offer.builder()
-                .title("offer")
                 .description("A life-changing opportunity relevant in our consumerist world")
                 .price(Money.of(29.95, "EUR"))
                 .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
@@ -33,7 +32,6 @@ public class InMemoryOffersServiceTest {
     @Test
     public void create_returnsOfferWithAssignedId() {
         Offer offer = Offer.builder()
-                .title("offer")
                 .description("A life-changing opportunity relevant in our consumerist world")
                 .price(Money.of(29.95, "EUR"))
                 .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
@@ -48,7 +46,6 @@ public class InMemoryOffersServiceTest {
     @Test
     public void cancel_whenActiveOffer_makesOfferInactive() {
         Offer offer = Offer.builder()
-                .title("offer")
                 .description("A life-changing opportunity relevant in our consumerist world")
                 .price(Money.of(29.95, "EUR"))
                 .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())

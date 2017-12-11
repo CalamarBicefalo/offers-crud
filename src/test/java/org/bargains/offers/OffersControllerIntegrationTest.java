@@ -5,8 +5,14 @@ import net.minidev.json.JSONArray;
 import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
@@ -27,7 +33,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class OffersControllerIntegrationTest extends AbstractIntegrationTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+public class OffersControllerIntegrationTest {
+
+
+    @Autowired
+    private MockMvc mvc;
 
     @Before
     public void validOfferCreationReturnsValidOfferWithId() {
@@ -93,7 +106,6 @@ public class OffersControllerIntegrationTest extends AbstractIntegrationTest {
     private OffersService offersService;
 
     private static final String VALID_OFFER = "{" +
-            "  \"title\": \"offer\"," +
             "  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
             "  \"price\": {" +
             "    \"amount\": 29.95," +
@@ -104,7 +116,6 @@ public class OffersControllerIntegrationTest extends AbstractIntegrationTest {
             "}";
 
     private static final Offer EXPECTED_VALID_OFFER = Offer.builder()
-            .title("offer")
             .description("A life-changing opportunity relevant in our consumerist world")
             .price(Money.of(29.95, "EUR"))
             .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
@@ -114,7 +125,6 @@ public class OffersControllerIntegrationTest extends AbstractIntegrationTest {
     // This would be so much better with kotlin :'(
     private static final Offer EXPECTED_VALID_OFFER_WITH_ID = Offer.builder()
             .id("a-very-unique-id")
-            .title("offer")
             .description("A life-changing opportunity relevant in our consumerist world")
             .price(Money.of(29.95, "EUR"))
             .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
