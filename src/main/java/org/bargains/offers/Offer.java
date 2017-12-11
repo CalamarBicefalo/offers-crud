@@ -1,8 +1,7 @@
 package org.bargains.offers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.javamoney.moneta.Money;
 import org.springframework.hateoas.Identifiable;
 
@@ -10,7 +9,7 @@ import java.time.Instant;
 
 @Data
 @Builder
-class Offer implements Identifiable<String> {
+public class Offer implements Identifiable<String> {
 
     @JsonIgnore
     private String id;
@@ -23,6 +22,8 @@ class Offer implements Identifiable<String> {
     private Instant offerEnds;
 
     @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private boolean cancelled;
 
     @JsonIgnore
@@ -31,5 +32,9 @@ class Offer implements Identifiable<String> {
         return !cancelled
                 && now.isAfter(offerStarts)
                 && now.isBefore(offerEnds);
+    }
+
+    public void cancel() {
+        this.cancelled = true;
     }
 }

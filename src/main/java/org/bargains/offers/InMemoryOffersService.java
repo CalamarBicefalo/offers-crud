@@ -28,7 +28,7 @@ public class InMemoryOffersService implements OffersService {
     @Override
     public void cancel(String id) {
         datastore.computeIfPresent(UUID.fromString(id), (key, offer) -> {
-            offer.setCancelled(true);
+            offer.cancel();
             return offer;
         });
     }
