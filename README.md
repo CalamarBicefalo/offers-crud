@@ -8,6 +8,11 @@ implemented using Spring Boot.
 - We assume there is a single merchant as there is no need for 
 more in the current spec
 
+- The 'persistence' of the app is a simple
+in memory map. It is concurrency aware
+as a REST API is supposed to be hit
+by many threads.
+
 - We assume offers have a start - end 
 date for validity because the briefing
 talks about "length of time" which implies

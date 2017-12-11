@@ -1,9 +1,11 @@
 package org.bargains.offers;
 
+import java.util.List;
+
 public interface OffersService {
     Offer create(Offer offer);
 
-    Iterable<Offer> findAll();
+    List<Offer> findAll();
 
     void cancel(String id);
 }
