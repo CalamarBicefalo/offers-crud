@@ -11,8 +11,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.eq;
@@ -62,16 +64,29 @@ public class OffersControllerIntegrationTest extends AbstractIntegrationTest {
                 .content(VALID_OFFER))
                 .andReturn().getResponse();
 
-        String cancelLink = extractLink(creationResponse, "cancel");
-
-        mvc.perform(request(PATCH, cancelLink))
+        mvc.perform(request(PATCH, extractLink(creationResponse, "cancel").get()))
                 .andExpect(status().isNoContent());
         verify(offersService).cancel(EXPECTED_VALID_OFFER_WITH_ID.getId());
     }
 
-    private String extractLink(MockHttpServletResponse response, String rel) throws UnsupportedEncodingException {
+    @Test
+    public void offerCancellation_whenExpiredOffer_doesNotIncludeCancelLink() throws Exception {
+        when(offersService.create(eq(EXPECTED_VALID_OFFER)))
+                .thenReturn(Offer.builder().cancelled(true).build());
+
+        MockHttpServletResponse creationResponse = mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content(VALID_OFFER))
+                .andReturn().getResponse();
+
+        Optional<String> cancelLink = extractLink(creationResponse, "cancel");
+
+        assertThat(cancelLink.isPresent()).isFalse();
+    }
+
+    private Optional<String> extractLink(MockHttpServletResponse response, String rel) throws UnsupportedEncodingException {
         JSONArray urls = JsonPath.read(response.getContentAsString(), String.format("$.links[?(@.rel=='%s')].href", rel));
-        return (String) urls.get(0);
+        return Optional.ofNullable(urls.isEmpty() ? null : (String) urls.get(0));
     }
 
     @MockBean

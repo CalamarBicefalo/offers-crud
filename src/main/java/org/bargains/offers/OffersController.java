@@ -5,6 +5,9 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
@@ -31,7 +34,10 @@ public class OffersController {
     }
 
     private Resource<Offer> createOfferResource(@RequestBody Offer offer) {
-        Link cancel = linkTo(OffersController.class).slash(offer.getId() + "?cancel=true").withRel("cancel");
-        return new Resource<>(offer, cancel);
+        List<Link> links = new ArrayList<>();
+        if (offer.isActive()) {
+            links.add(linkTo(OffersController.class).slash(offer.getId() + "?cancel=true").withRel("cancel"));
+        }
+        return new Resource<>(offer, links);
     }
 }
