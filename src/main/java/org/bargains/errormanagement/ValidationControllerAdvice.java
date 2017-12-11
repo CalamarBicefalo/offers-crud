@@ -1,4 +1,4 @@
-package org.bargains;
+package org.bargains.errormanagement;
 
 import com.google.common.collect.ImmutableMap;
 import org.springframework.http.HttpStatus;
