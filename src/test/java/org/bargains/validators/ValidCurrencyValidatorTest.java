@@ -1,5 +1,6 @@
 package org.bargains.validators;
 
+import org.bargains.config.validators.ValidCurrencyValidator;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

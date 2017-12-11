@@ -1,7 +1,7 @@
 package org.bargains.offers;
 
 import lombok.Data;
-import org.bargains.validators.ValidCurrency;
+import org.bargains.config.validators.ValidCurrency;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;

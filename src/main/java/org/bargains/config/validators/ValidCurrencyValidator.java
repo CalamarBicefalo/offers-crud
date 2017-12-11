@@ -1,4 +1,4 @@
-package org.bargains.validators;
+package org.bargains.config.validators;
 
 import org.javamoney.moneta.Money;
 
