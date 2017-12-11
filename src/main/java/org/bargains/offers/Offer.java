@@ -1,10 +1,11 @@
 package org.bargains.offers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import org.javamoney.moneta.Money;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -15,10 +16,17 @@ class Offer {
 
     private Money price;
 
-    private LocalDateTime offerStarts;
-    private LocalDateTime offerEnds;
+    private Instant offerStarts;
+    private Instant offerEnds;
 
+    @JsonIgnore
     private boolean cancelled;
-    private boolean active;
 
+    @JsonIgnore
+    public boolean isActive() {
+        Instant now = Instant.now();
+        return !cancelled
+                && now.isAfter(offerStarts)
+                && now.isBefore(offerEnds);
+    }
 }
