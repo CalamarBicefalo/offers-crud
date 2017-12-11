@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import org.javamoney.moneta.Money;
+import org.springframework.hateoas.Identifiable;
 
 import java.time.Instant;
 
 @Data
 @Builder
-class Offer {
+class Offer implements Identifiable<String> {
+
+    @JsonIgnore
+    private String id;
 
     private String title;
     private String description;

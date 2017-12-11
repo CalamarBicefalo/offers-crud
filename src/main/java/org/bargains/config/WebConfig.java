@@ -9,7 +9,7 @@ import org.zalando.jackson.datatype.money.MoneyModule;
 public class WebConfig {
 
     @Bean
-    public Module moneyModule(){
+    public Module moneyModule() {
         return new MoneyModule();
     }
 }

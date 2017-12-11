@@ -10,9 +10,9 @@ import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class OffersServiceTest {
+public class InMemoryOffersServiceTest {
 
-    private OffersService offersService = new InMemoryOfferService();
+    private OffersService offersService = new InMemoryOffersService();
 
     @Test
     public void create_persistsOffer() {
@@ -27,5 +27,20 @@ public class OffersServiceTest {
         offersService.create(offer);
 
         assertThat(offersService.findAll()).contains(offer);
+    }
+
+    @Test
+    public void create_returnsOfferWithAssignedId() {
+        Offer offer = Offer.builder()
+                .title("offer")
+                .description("A life-changing opportunity relevant in our consumerist world")
+                .price(Money.of(29.95, "EUR"))
+                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+                .offerEnds(LocalDateTime.of(2018, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+                .build();
+
+        offer = offersService.create(offer);
+
+        assertThat(offer.getId()).isNotEmpty();
     }
 }

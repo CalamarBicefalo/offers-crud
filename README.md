@@ -17,3 +17,16 @@ a duration
 dependency, although it improves testability
 I personally prefer to think of alternative ways
 and keep dependencies lower.
+
+- There is mutability in some areas
+such as creation of offers which is not 
+ideal, i'd personally take advantage
+of kotlin constructs, but for the sake
+of the exercise it feels like a fair
+compromise.
+
+- Once cancelled offers cannot be
+re-enabled as there is no specific
+requirement for that. We could implement
+state nicely exposing the appropriate
+hypermedia links

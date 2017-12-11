@@ -13,9 +13,9 @@ public class OfferTest {
     public void isActive_whenNowUTCBetweenOfferValidity_returnsTrue() {
         Instant futureDate = ZonedDateTime.now(UTC).plusDays(1).toInstant();
         Offer nonExpiredOffer = Offer.builder()
-                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER,1,10,10,12).atZone(UTC).toInstant())
+                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
                 .offerEnds(futureDate)
-        .build();
+                .build();
 
         assertThat(nonExpiredOffer.isActive()).isTrue();
     }
@@ -24,9 +24,9 @@ public class OfferTest {
     public void isActive_whenNowUTCAfterOfferEnds_returnsFalse() {
         Instant aSecondAgo = ZonedDateTime.now(UTC).minusSeconds(1).toInstant();
         Offer nonExpiredOffer = Offer.builder()
-                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER,1,10,10,12).atZone(UTC).toInstant())
+                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
                 .offerEnds(aSecondAgo)
-        .build();
+                .build();
 
         assertThat(nonExpiredOffer.isActive()).isFalse();
     }
@@ -37,7 +37,7 @@ public class OfferTest {
         Offer nonExpiredOffer = Offer.builder()
                 .offerStarts(tomorrow)
                 .offerEnds(ZonedDateTime.now().plusYears(999).toInstant()) // We'll be well dead by then
-        .build();
+                .build();
 
         assertThat(nonExpiredOffer.isActive()).isFalse();
     }
@@ -46,7 +46,7 @@ public class OfferTest {
     public void isActive_whenOfferHasBeenCancelled_returnsFalse() {
         Instant futureDate = ZonedDateTime.now(UTC).plusDays(1).toInstant();
         Offer nonExpiredOffer = Offer.builder()
-                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER,1,10,10,12).atZone(UTC).toInstant())
+                .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
                 .offerEnds(futureDate)
                 .cancelled(true)
                 .build();

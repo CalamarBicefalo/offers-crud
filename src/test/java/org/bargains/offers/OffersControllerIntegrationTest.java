@@ -1,54 +1,108 @@
 package org.bargains.offers;
 
+import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONArray;
 import org.javamoney.moneta.Money;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.Month;
 
 import static java.time.ZoneOffset.UTC;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class OffersControllerIntegrationTest extends AbstractIntegrationTest {
 
-	@Autowired
-	private MockMvc mvc;
+    @Before
+    public void validOfferCreationReturnsValidOfferWithId() {
+        when(offersService.create(eq(EXPECTED_VALID_OFFER)))
+                .thenReturn(EXPECTED_VALID_OFFER_WITH_ID);
+    }
+
+    @Test
+    public void offerCreation_whenValidOffer_returns201AndCreatesOffer() throws Exception {
+        mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content(VALID_OFFER))
+
+                .andExpect(status().isCreated());
+
+        verify(offersService).create(EXPECTED_VALID_OFFER);
+    }
+
+    @Test
+    public void offerCreation_whenValidOffer_returnsCancellationLink() throws Exception {
+        mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content(VALID_OFFER))
+
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.links[?(@.rel=='cancel')].href",
+                        contains(containsString("/offers"))));
+    }
+
+    @Test
+    public void offerCancellation_whenCreatingOfferAndFollowingCancelLink_cancelsOffer() throws Exception {
+        MockHttpServletResponse creationResponse = mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content(VALID_OFFER))
+                .andReturn().getResponse();
+
+        String cancelLink = extractLink(creationResponse, "cancel");
+
+        mvc.perform(request(PATCH, cancelLink))
+                .andExpect(status().isNoContent());
+        verify(offersService).cancel(EXPECTED_VALID_OFFER_WITH_ID.getId());
+    }
+
+    private String extractLink(MockHttpServletResponse response, String rel) throws UnsupportedEncodingException {
+        JSONArray urls = JsonPath.read(response.getContentAsString(), String.format("$.links[?(@.rel=='%s')].href", rel));
+        return (String) urls.get(0);
+    }
 
     @MockBean
     private OffersService offersService;
 
-	@Test
-	public void offerCreation_whenValidOffer_returns201AndCreatesOffer() throws Exception {
-		Offer expectedOffer = Offer.builder()
-				.title("offer")
-				.description("A life-changing opportunity relevant in our consumerist world")
-				.price(Money.of(29.95, "EUR"))
-				.offerStarts(LocalDateTime.of(2017, Month.NOVEMBER,1,10,10,12).atZone(UTC).toInstant())
-				.offerEnds(LocalDateTime.of(2018, Month.NOVEMBER,1,10,10,12).atZone(UTC).toInstant())
-				.build();
-		mvc.perform(request(POST, "/offers")
-				.contentType(APPLICATION_JSON)
-				.content("{" +
-						"  \"title\": \"offer\"," +
-						"  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
-						"  \"price\": {" +
-						"    \"amount\": 29.95," +
-						"    \"currency\": \"EUR\"" +
-						"  }," +
-						"  \"offerStarts\": \"2017-11-01T10:10:12Z\"," +
-						"  \"offerEnds\": \"2018-11-01T10:10:12Z\"" +
-						"}"))
+    private static final String VALID_OFFER = "{" +
+            "  \"title\": \"offer\"," +
+            "  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
+            "  \"price\": {" +
+            "    \"amount\": 29.95," +
+            "    \"currency\": \"EUR\"" +
+            "  }," +
+            "  \"offerStarts\": \"2017-11-01T10:10:12Z\"," +
+            "  \"offerEnds\": \"2018-11-01T10:10:12Z\"" +
+            "}";
 
-				.andExpect(status().isCreated());
+    private static final Offer EXPECTED_VALID_OFFER = Offer.builder()
+            .title("offer")
+            .description("A life-changing opportunity relevant in our consumerist world")
+            .price(Money.of(29.95, "EUR"))
+            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .offerEnds(LocalDateTime.of(2018, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .build();
 
-        verify(offersService).create(expectedOffer);
-	}
-
+    // This would be so much better with kotlin :'(
+    private static final Offer EXPECTED_VALID_OFFER_WITH_ID = Offer.builder()
+            .id("a-very-unique-id")
+            .title("offer")
+            .description("A life-changing opportunity relevant in our consumerist world")
+            .price(Money.of(29.95, "EUR"))
+            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .offerEnds(LocalDateTime.of(2018, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .build();
 }

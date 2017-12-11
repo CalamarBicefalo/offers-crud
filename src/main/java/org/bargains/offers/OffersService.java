@@ -1,6 +1,9 @@
 package org.bargains.offers;
 
 public interface OffersService {
-    void create(Offer offer);
+    Offer create(Offer offer);
+
     Iterable<Offer> findAll();
+
+    void cancel(String id);
 }
