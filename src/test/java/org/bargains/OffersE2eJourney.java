@@ -15,15 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -109,23 +105,23 @@ public class OffersE2eJourney {
     private static final E2eOffer ACTIVE_OFFER = E2eOffer.builder()
             .description("active")
             .price(Money.builder().amount(29.95).currency("EUR").build())
-            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
-            .offerEnds(Instant.MAX)
+            .offerStarts("2017-10-01T10:12:13Z")
+            .offerEnds("3017-10-01T10:12:13Z")
             .build();
 
     private static final E2eOffer CANCELLED_OFFER = E2eOffer.builder()
             .description("cancelled")
             .price(Money.builder().amount(29.95).currency("EUR").build())
-            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
-            .offerEnds(Instant.MAX)
+            .offerStarts("2017-10-01T10:12:13Z")
+            .offerEnds("3017-10-01T10:12:13Z")
             .build();
 
 
     private static final E2eOffer EXPIRED_OFFER = E2eOffer.builder()
             .description("expired")
             .price(Money.builder().amount(29.95).currency("EUR").build())
-            .offerStarts(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
-            .offerEnds(LocalDateTime.of(2017, Month.NOVEMBER, 1, 10, 10, 12).atZone(UTC).toInstant())
+            .offerStarts("2017-10-01T10:12:13Z")
+            .offerEnds("2017-10-01T10:12:13Z")
             .build();
 
     @Data
@@ -149,8 +145,8 @@ public class OffersE2eJourney {
 
         private Money price;
 
-        private Instant offerStarts;
-        private Instant offerEnds;
+        private String offerStarts;
+        private String offerEnds;
 
         private List<Link> links;
 

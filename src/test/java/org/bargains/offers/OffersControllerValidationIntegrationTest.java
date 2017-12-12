@@ -149,6 +149,24 @@ public class OffersControllerValidationIntegrationTest {
     }
 
     @Test
+    public void offerCreation_whenInvalidOfferStarts_returns400() throws Exception {
+        mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content("{" +
+                        "  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
+                        "  \"price\": {" +
+                        "    \"amount\": 29.95," +
+                        "    \"currency\": \"EUR\"" +
+                        "  }," +
+                        "  \"offerStarts\": \"aquirkydate\"," +
+                        "  \"offerEnds\": \"2018-11-01T10:10:12Z\"" +
+                        "}"))
+
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].field", is("offerStarts")));
+    }
+
+    @Test
     public void offerCreation_whenMissingOfferEnds_returns400() throws Exception {
         mvc.perform(request(POST, "/offers")
                 .contentType(APPLICATION_JSON)
@@ -159,6 +177,24 @@ public class OffersControllerValidationIntegrationTest {
                         "    \"currency\": \"EUR\"" +
                         "  }," +
                         "  \"offerStarts\": \"2017-11-01T10:10:12Z\"" +
+                        "}"))
+
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].field", is("offerEnds")));
+    }
+
+    @Test
+    public void offerCreation_whenInvalidOfferEnds_returns400() throws Exception {
+        mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content("{" +
+                        "  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
+                        "  \"price\": {" +
+                        "    \"amount\": 29.95," +
+                        "    \"currency\": \"EUR\"" +
+                        "  }," +
+                        "  \"offerEnds\": \"aquirkydate\"," +
+                        "  \"offerStarts\": \"2018-11-01T10:10:12Z\"" +
                         "}"))
 
                 .andExpect(status().isBadRequest())

@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidCurrencyValidator.class)
-public @interface ValidCurrency {
+@Constraint(validatedBy = ValidInstantValidator.class)
+public @interface ValidInstant {
 
-    String message() default "Invalid currency code. Try something like 'EUR'";
+    String message() default "Invalid instant, try something like '2017-03-15T10:11:23Z' instead";
 
     Class<?>[] groups() default {};
 
