@@ -15,7 +15,6 @@ If you are in a windows machine there are two options:
 ## Example offer structure
 
 ```$json
-
 {
   "description": "A life-changing opportunity relevant in our consumerist world",
   "price": {
@@ -25,7 +24,6 @@ If you are in a windows machine there are two options:
   "offerStarts": "2017-11-01T10:10:12Z",
   "offerEnds": "2018-11-01T10:10:12Z"
 }
-
 ```
 
 ## Design considerations
@@ -42,6 +40,9 @@ Maturity model, using HATEOAS to serve hypermedia links
 - The rest of the links are fairly standard
 - We skipped 'self' links for the sake of simplicity
 - There is an e2e Journey that demonstrates the happy path
+- The payload is validated. Try wrong dates, nulls, currencies... If the JSON is malformed, however, you'll get
+a less user-friendly message although meaningful. I did not bother as it
+actually provides some useful information without simply returning a stacktrace.
 
 ## Assumptions
 
