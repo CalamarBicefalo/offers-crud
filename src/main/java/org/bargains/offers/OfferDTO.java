@@ -2,6 +2,7 @@ package org.bargains.offers;
 
 import lombok.Data;
 import org.bargains.config.validators.ValidCurrency;
+import org.bargains.config.validators.ValidDouble;
 import org.bargains.config.validators.ValidInstant;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -26,7 +27,7 @@ class OfferDTO {
     Offer toOffer() {
         return Offer.builder()
                 .description(description)
-                .price(org.javamoney.moneta.Money.of(price.amount, price.currency))
+                .price(org.javamoney.moneta.Money.of(Double.parseDouble(price.amount), price.currency))
                 .offerStarts(Instant.parse(offerStarts))
                 .offerEnds(Instant.parse(offerEnds))
                 .description(description)
@@ -39,7 +40,8 @@ class OfferDTO {
         @NotEmpty
         @ValidCurrency
         private String currency;
+        @ValidDouble
         @NotNull
-        private Double amount;
+        private String amount;
     }
 }

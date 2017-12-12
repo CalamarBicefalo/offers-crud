@@ -96,6 +96,24 @@ public class OffersControllerValidationIntegrationTest {
     }
 
     @Test
+    public void offerCreation_whenMissingInvalidAmount_returns400() throws Exception {
+        mvc.perform(request(POST, "/offers")
+                .contentType(APPLICATION_JSON)
+                .content("{" +
+                        "  \"description\": \"A life-changing opportunity relevant in our consumerist world\"," +
+                        "  \"price\": {" +
+                        "    \"amount\": \"not quite\"," +
+                        "    \"currency\": \"EUR\"" +
+                        "  }," +
+                        "  \"offerStarts\": \"2017-11-01T10:10:12Z\"," +
+                        "  \"offerEnds\": \"2018-11-01T10:10:12Z\"" +
+                        "}"))
+
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].field", is("price.amount")));
+    }
+
+    @Test
     public void offerCreation_whenMissingPriceCurrency_returns400() throws Exception {
         mvc.perform(request(POST, "/offers")
                 .contentType(APPLICATION_JSON)
