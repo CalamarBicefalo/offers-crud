@@ -104,14 +104,14 @@ public class OffersE2eJourney {
 
     private static final E2eOffer ACTIVE_OFFER = E2eOffer.builder()
             .description("active")
-            .price(Money.builder().amount(29.95).currency("EUR").build())
+            .price(Price.builder().amount(29.95).currency("EUR").build())
             .offerStarts("2017-10-01T10:12:13Z")
             .offerEnds("3017-10-01T10:12:13Z")
             .build();
 
     private static final E2eOffer CANCELLED_OFFER = E2eOffer.builder()
             .description("cancelled")
-            .price(Money.builder().amount(29.95).currency("EUR").build())
+            .price(Price.builder().amount(29.95).currency("EUR").build())
             .offerStarts("2017-10-01T10:12:13Z")
             .offerEnds("3017-10-01T10:12:13Z")
             .build();
@@ -119,7 +119,7 @@ public class OffersE2eJourney {
 
     private static final E2eOffer EXPIRED_OFFER = E2eOffer.builder()
             .description("expired")
-            .price(Money.builder().amount(29.95).currency("EUR").build())
+            .price(Price.builder().amount(29.95).currency("EUR").build())
             .offerStarts("2017-10-01T10:12:13Z")
             .offerEnds("2017-10-01T10:12:13Z")
             .build();
@@ -133,7 +133,7 @@ public class OffersE2eJourney {
 
     @Data
     @Builder
-    private static class Money {
+    private static class Price {
         private double amount;
         private String currency;
     }
@@ -143,7 +143,7 @@ public class OffersE2eJourney {
     private static class E2eOffer {
         private String description;
 
-        private Money price;
+        private Price price;
 
         private String offerStarts;
         private String offerEnds;

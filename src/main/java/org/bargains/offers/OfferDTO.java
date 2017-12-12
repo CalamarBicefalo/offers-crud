@@ -5,6 +5,7 @@ import org.bargains.config.validators.ValidCurrency;
 import org.bargains.config.validators.ValidDouble;
 import org.bargains.config.validators.ValidInstant;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.javamoney.moneta.Money;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ class OfferDTO {
     private String description;
     @NotNull
     @Valid
-    private Money price;
+    private Price price;
     @NotEmpty
     @ValidInstant
     private String offerStarts;
@@ -27,7 +28,7 @@ class OfferDTO {
     Offer toOffer() {
         return Offer.builder()
                 .description(description)
-                .price(price.toMonetaMoney())
+                .price(price.toMoney())
                 .offerStarts(Instant.parse(offerStarts))
                 .offerEnds(Instant.parse(offerEnds))
                 .description(description)
@@ -36,7 +37,7 @@ class OfferDTO {
     }
 
     @Data
-    private static class Money {
+    private static class Price {
         @NotEmpty
         @ValidCurrency
         private String currency;
@@ -44,8 +45,8 @@ class OfferDTO {
         @NotNull
         private String amount;
 
-        private org.javamoney.moneta.Money toMonetaMoney() {
-            return org.javamoney.moneta.Money.of(Double.parseDouble(amount), currency);
+        private Money toMoney() {
+            return Money.of(Double.parseDouble(amount), currency);
         }
     }
 }
