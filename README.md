@@ -12,6 +12,22 @@ If you are in a windows machine there are two options:
 1. Get a *NIX machine and go back to the previous step
 2. Use the gradle wrapper and run `gradlew bootRun`
 
+## Example offer structure
+
+```$json
+
+{
+  "description": "A life-changing opportunity relevant in our consumerist world",
+  "price": {
+    "amount": 29.95,
+    "currency": "EUR"
+  },
+  "offerStarts": "2017-11-01T10:10:12Z",
+  "offerEnds": "2018-11-01T10:10:12Z"
+}
+
+```
+
 ## Design considerations
 - The app has been TDDed and created in small incremental steps,
 you can check the git history to get a taste of the process
