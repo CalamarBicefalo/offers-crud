@@ -27,7 +27,7 @@ class OfferDTO {
     Offer toOffer() {
         return Offer.builder()
                 .description(description)
-                .price(org.javamoney.moneta.Money.of(Double.parseDouble(price.amount), price.currency))
+                .price(price.toMonetaMoney())
                 .offerStarts(Instant.parse(offerStarts))
                 .offerEnds(Instant.parse(offerEnds))
                 .description(description)
@@ -43,5 +43,9 @@ class OfferDTO {
         @ValidDouble
         @NotNull
         private String amount;
+
+        private org.javamoney.moneta.Money toMonetaMoney() {
+            return org.javamoney.moneta.Money.of(Double.parseDouble(amount), currency);
+        }
     }
 }
